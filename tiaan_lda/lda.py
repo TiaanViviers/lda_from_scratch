@@ -7,7 +7,7 @@ class LDA:
         features are rows and observations are columns.
     """
 
-    def __init__(self, n_components=None):
+    def __init__(self, n_components=None, normalise=False):
         """Initialize the LDA model.
 
         Parameters:
@@ -20,6 +20,7 @@ class LDA:
         None
         """
         self.n_components = n_components
+        self.normalise = normalise
 
         self.class_labels = None
         self.global_mean = None
@@ -57,6 +58,10 @@ class LDA:
         S_w = self._compute_within_scatter(X, y)
         class_counts = self._compute_class_counts(X, y)
         S_b = self._compute_between_scatter(X.shape[0], class_counts)
+        
+        if self.normalise:
+            S_w = S_w / X.shape[1]
+            S_b = S_b / X.shape[1]
 
         # Compute whitening matrix.
         P = self._compute_whitening(S_w)
