@@ -6,8 +6,10 @@ This script follows the CS315 data convention:
 """
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from lda import LDA
+from lda_utils import explained_variance_summary, plot_before_after_lda, plot_class_scatter_before_lda, plot_lda_projection
 
 
 def main():
@@ -31,8 +33,18 @@ def main():
 
     test_lda = LDA()
     Z = test_lda.fit_transform(X_t, y)
-    print(test_lda.explained_variance_ratio)
+    summary = explained_variance_summary(test_lda.explained_variance_ratio)
+
+    print("Explained variance ratio:", summary["explained_variance_ratio"])
+    print("Cumulative variance:", summary["cumulative_explained_variance"])
     print(f"Projected shape: {Z.shape}")
+
+    feature_names = [col for col in df.columns if col != "variety"]
+    plot_class_scatter_before_lda(X_t, y, feature_indices=(0,1), feature_names=feature_names)
+    plot_class_scatter_before_lda(X_t, y, feature_indices=(2,3), feature_names=feature_names)
+    plot_lda_projection(Z, y)
+    plt.show()
+
 
 
 if __name__ == "__main__":
